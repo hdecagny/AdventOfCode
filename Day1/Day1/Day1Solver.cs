@@ -15,8 +15,15 @@ public static class Day1Solver
     {
         var data = LoadData();
 
-        var sumOfThreeElements = (data.Zip(data.Skip(1), (x, y) => x + y)).Zip(data.Skip(2), (x, y) => x + y).ToList();
-        var substraction = sumOfThreeElements.Zip(sumOfThreeElements.Skip(1), (x, y) => y - x);
+        //Probably not efficient if i had to work with Gigabites of data but it has the merit to hold in two lines
+
+        var sumOfThreeElements = data
+            .Zip(data.Skip(1), (x, y) => x + y)
+            .Zip(data.Skip(2), (x, y) => x + y)
+            .ToList();
+
+        var substraction = sumOfThreeElements
+            .Zip(sumOfThreeElements.Skip(1), (x, y) => y - x);
 
         return substraction.Count(p => p > 0);
     }
