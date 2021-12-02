@@ -1,10 +1,15 @@
-﻿namespace AdventOfCode.Day1;
+﻿using System.Net.Mime;
+using AdventOfCode.Data;
+
+namespace AdventOfCode.Day1;
 
 public static class Day1Solver
 {
     public static long SolveDay1Puzzle1()
     {
-        var data = LoadData();
+        var data = DataLoader.LoadDataPerLineFromDay(1)
+            .Select(int.Parse)
+            .ToList(); 
 
         var substraction = data.Zip(data.Skip(1), (x, y) => y - x);
 
@@ -13,7 +18,9 @@ public static class Day1Solver
 
     public static long SolveDay1Puzzle2()
     {
-        var data = LoadData();
+        var data = DataLoader.LoadDataPerLineFromDay(1)
+            .Select(int.Parse)
+            .ToList(); 
 
         //Probably not efficient if i had to work with Gigabites of data but it has the merit to hold in two lines
 
@@ -26,13 +33,5 @@ public static class Day1Solver
             .Zip(sumOfThreeElements.Skip(1), (x, y) => y - x);
 
         return substraction.Count(p => p > 0);
-    }
-
-    private static List<int> LoadData()
-    {
-        return System.IO.File
-            .ReadAllLines(@"C:\Users\Hcagny\source\repos\Day1\Day1\Data\Day1Data.txt")
-            .Select(int.Parse)
-            .ToList();
     }
 }
