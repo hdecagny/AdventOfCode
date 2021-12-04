@@ -24,18 +24,11 @@
 
         public bool IsGridSolved()
         {
-            return SolveDiagonal() || SolveHorizontalLines() || SolveVerticalLines();
+            return SolveHorizontalLines() || SolveVerticalLines();
         }
         public int GridScore()
         {
             return IsGridSolved() ? _grid.Sum() : 0; ;
-        }
-
-        private bool SolveDiagonal()
-        {
-            var line = _grid.Where((x, i) => i % (_gridLength+1) == 0);
-
-            return line.Sum() == 0;
         }
 
         private bool SolveHorizontalLines()
