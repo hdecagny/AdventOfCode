@@ -2,39 +2,48 @@
 {
     public class BingoGrid
     {
-        public int[] Grid { get; set; }
+        private int[] _grid { get; set; }
 
         private readonly int _gridLength = 5;
 
+        public BingoGrid(int[] grid)
+        {
+            _grid = grid;
+        }
+
         public void CheckNumber(int bingoNumber)
         {
-            foreach(var i in Grid)
+            for(var i=0;i< _grid.Length;i++)
             {
-                if (i == bingoNumber)
+                if (_grid[i] == bingoNumber)
                 {
-                    i == 0;
+                    _grid[i] = 0;
                 }
             }
         }
 
         public bool IsGridSolved()
         {
-            SolveDiagonal();
-            SolveHorizontalLines();
-            SolveVerticalLines();
+            return SolveDiagonal() || SolveHorizontalLines() || SolveVerticalLines();
+        }
+        public int GridScore()
+        {
+            return IsGridSolved() ? _grid.Sum() : 0; ;
         }
 
         private bool SolveDiagonal()
         {
+            var line = _grid.Where((x, i) => i % (_gridLength+1) == 0);
 
+            return line.Sum() == 0;
         }
 
         private bool SolveHorizontalLines()
         {
             for(var i=0;i< _gridLength; i++)
             {
-                var sum = Grid.Where((x, i) => i % _gridLength == i);
-                if (sum.Sum() == 0) { return true; }
+                var line = _grid.Where((x, index) => index % _gridLength == i);
+                if (line.Sum() == 0) { return true; }
             }
 
             return false;
@@ -44,8 +53,8 @@
         {
             for (var i = 0; i < _gridLength; i++)
             {
-                var sum = Grid.Skip().Take(5);
-                if (sum.Sum() == 0) { return true; }
+                var line = _grid.Skip(i* _gridLength).Take(5);
+                if (line.Sum() == 0) { return true; }
             }
 
             return false;
