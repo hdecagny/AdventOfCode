@@ -3,7 +3,7 @@ using AdventOfCode.Day4;
 
 namespace AdventOfCode.Day2;
 
-public static class Day4Solver
+public class Day4Solver
 {
     public static long SolvePuzzle1()
     {
@@ -11,15 +11,9 @@ public static class Day4Solver
 
         var numbersToDraw = data[0].Split(",").Select(x => int.Parse(x)).ToList();
 
-        var bingogrids = data
-            .Skip(1)
-            .Select(b => b.Replace("\r\n", " ").Replace("  "," ")).ToList()
-            .Select(b => b.Split(" ")).ToList()
-            .Select(bi=>bi.Where(s => s != "").Select(k => int.Parse(k)).ToArray())
-            .Select(grid => new BingoGrid(grid))
-            .ToList();
+        var bingogrids = ConvertToBingoGrid(data.Skip(1).ToList());
 
-        foreach(var number in numbersToDraw)
+        foreach (var number in numbersToDraw)
         {
             bingogrids.ForEach(b => b.CheckNumber(number));
 
@@ -38,13 +32,7 @@ public static class Day4Solver
 
         var numbersToDraw = data[0].Split(",").Select(x => int.Parse(x)).ToList();
 
-        var bingogrids = data
-            .Skip(1)
-            .Select(b => b.Replace("\r\n", " ").Replace("  ", " ")).ToList()
-            .Select(b => b.Split(" ")).ToList()
-            .Select(bi => bi.Where(s => s != "").Select(k => int.Parse(k)).ToArray())
-            .Select(grid => new BingoGrid(grid))
-            .ToList();
+        var bingogrids = ConvertToBingoGrid(data.Skip(1).ToList());
 
         foreach (var number in numbersToDraw)
         {
@@ -60,5 +48,16 @@ public static class Day4Solver
         }
 
         return 0;
+    }
+
+    private static List<BingoGrid> ConvertToBingoGrid(IEnumerable<string> data)
+    {
+        return data
+            .Skip(1)
+            .Select(b => b.Replace("\r\n", " ").Replace("  ", " ")).ToList()
+            .Select(b => b.Split(" ")).ToList()
+            .Select(bi => bi.Where(s => s != "").Select(k => int.Parse(k)).ToArray())
+            .Select(grid => new BingoGrid(grid))
+            .ToList();
     }
 }
