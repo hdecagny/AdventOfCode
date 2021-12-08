@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Data;
+﻿
+using AdventOfCode.Data;
 
 namespace AdventOfCode.Day2;
 

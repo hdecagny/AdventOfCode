@@ -18,9 +18,9 @@ public class Day4Solver
             bingogrids.ForEach(b => b.CheckNumber(number));
 
             if (bingogrids.Any(b => b.IsGridSolved()))
-                {
+            {
                 return bingogrids.Max(b => b.GridScore() * number);
-                 }
+            }
         }
 
         return 0;

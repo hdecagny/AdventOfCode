@@ -1,5 +1,4 @@
-﻿using System.Net.Mime;
-using AdventOfCode.Data;
+﻿using AdventOfCode.Data;
 
 namespace AdventOfCode.Day1;
 
