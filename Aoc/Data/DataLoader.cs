@@ -10,12 +10,12 @@ namespace AdventOfCode.Data
     {
         public static string[] LoadDataPerLineFromDay(int day)
         {
-            return System.IO.File.ReadAllLines(@$"C:\Users\henri\Source\Repos\hdecagny\AdventOfCode2021\Aoc\Data\Day{day}Data.txt");
+            return System.IO.File.ReadAllLines(@$"C:\Users\Hcagny\source\repos\Aoc2021\Aoc\Data\Day{day}Data.txt");
         }
 
         public static string LoadDataFromDay(int day)
         {
-            return System.IO.File.ReadAllText(@$"C:\Users\henri\Source\Repos\hdecagny\AdventOfCode2021\Aoc\Data\Day{day}Data.txt");
+            return System.IO.File.ReadAllText(@$"C:\Users\Hcagny\source\repos\Aoc2021\Aoc\Data\Day{day}Data.txt");
         }
     }
 }
