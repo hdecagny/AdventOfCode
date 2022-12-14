@@ -6,132 +6,110 @@ public static class Day9Solver
 {
     public static long SolvePuzzle1()
     {
-        var data = DataLoader.LoadDataPerLineFromDay(9)
-            .Select(s => s.ToCharArray().Select(c => int.Parse(c.ToString())).ToList())
-            .ToList();
+        var input = DataLoader.LoadDataPerLineFromDay(9);
 
-        var length = data[1].Count;
-        var height = data.Count;
+        var headPosition = (0, 0);
+        var tailPosition = (0, 0);
+        var visitedPositions = new List<(int, int)>() { (0, 0) };
 
-        var answer = 0;
-
-        for (var y = 0; y < height; y++)
+        foreach (var command in input)
         {
-            for (var x = 0; x < length; x++)
+            var parsedCommand = command.Split(" ");
+            var direction = parsedCommand[0];
+            var iteration = int.Parse(parsedCommand[1]);
+
+            for (var i = 1; i <= iteration; i++)
             {
-                answer += GetRiskLevel(data, x, y);
-            }
-        }
+                headPosition = DetermineNewHeadPosition(headPosition, direction);
+                tailPosition = DetermineNewTailPosition(headPosition, tailPosition);
 
-        return answer;
-    }
-
-    private static int GetRiskLevel(List<List<int>> lavamap, int x, int y)
-    {
-        var length = lavamap[1].Count;
-        var height = lavamap.Count;
-
-        var currentHeight = lavamap[y][x];
-
-        if ((y == 0 || lavamap[y - 1][x] > currentHeight)
-            && (y == height - 1 || lavamap[y + 1][x] > currentHeight)
-            && (x == 0 || lavamap[y][x - 1] > currentHeight)
-            && (x == length - 1 || lavamap[y][x + 1] > currentHeight))
-        {
-            return currentHeight + 1;
-        }
-
-        return 0;
-    }
-
-    public static double SolvePuzzle2()
-    {
-        var data = DataLoader.LoadDataPerLineFromDay(9)
-            .Select(s => s.ToCharArray().Select(c => int.Parse(c.ToString())).ToList())
-            .ToList();
-
-        var length = data[1].Count;
-        var height = data.Count;
-
-        var lowpointsList = new List<(int, int)>();
-
-        for (var y = 0; y < height; y++)
-        {
-            for (var x = 0; x < length; x++)
-            {
-                if (GetRiskLevel(data, x, y) != 0)
+                if (!visitedPositions.Contains(tailPosition))
                 {
-                    lowpointsList.Add((x, y));
+                    visitedPositions.Add(tailPosition);
                 }
             }
         }
 
-        var bassinList = lowpointsList
-            .Select(lowpoint => GetBassinSize(data, lowpoint.Item1, lowpoint.Item2))
-            .ToList();
+        return visitedPositions.Count;
+    }
 
-        var top3 = bassinList.OrderByDescending(s=>s).Take(3).ToList();
+    private static (int, int) DetermineNewHeadPosition((int, int) originalHeadPosition, string direction)
+    {
+        return direction switch
+               {
+                   "R" => (originalHeadPosition.Item1, originalHeadPosition.Item2 + 1),
+                   "L" => (originalHeadPosition.Item1, originalHeadPosition.Item2 - 1),
+                   "U" => (originalHeadPosition.Item1 + 1, originalHeadPosition.Item2),
+                   "D" => (originalHeadPosition.Item1 - 1, originalHeadPosition.Item2),
+                   _ => throw new NotImplementedException()
+               };
+    }
 
-        return top3[0] * top3[1] * top3[2];
+    private static (int, int) DetermineNewTailPosition((int, int) originalHeadPosition, (int, int) originalTailPosition)
+    {
+        if (ComputeSquareDistance(originalHeadPosition, originalTailPosition) <= 2)
+        {
+            return originalTailPosition;
+        }
+
+        var newX = originalTailPosition.Item1 + Math.Sign(originalHeadPosition.Item1 - originalTailPosition.Item1);
+        var newY = originalTailPosition.Item2 + Math.Sign(originalHeadPosition.Item2 - originalTailPosition.Item2);
+
+        return (newX, newY);
+    }
+
+    private static double ComputeSquareDistance((int, int) originalHeadPosition, (int, int) originalTailPosition)
+    {
+        return Math.Pow(originalHeadPosition.Item1 - originalTailPosition.Item1, 2) + Math.Pow(originalHeadPosition.Item2 - originalTailPosition.Item2, 2);
     }
 
 
-    private static int GetBassinSize(List<List<int>> lavamap, int xLowestPoint, int yLowestPoint)
+    public static double SolvePuzzle2()
     {
-        var length = lavamap[1].Count;
-        var height = lavamap.Count;
+        var input = DataLoader.LoadDataPerLineFromDay(9);
 
-        var pointsInBassin = new List<(int, int)>();
-        var coordinatesToCheck = new Queue<(int, int)>();
-
-        pointsInBassin.Add((xLowestPoint, yLowestPoint));
-        coordinatesToCheck.Enqueue((xLowestPoint, yLowestPoint));
-
-        while (coordinatesToCheck.TryDequeue(out var actualCoordinate))
+        var ropePosition = new List<(int, int)>()
         {
-            var x = actualCoordinate.Item1;
-            var y = actualCoordinate.Item2;
-            var currentHeight = lavamap[y][x];
+            (0, 0),
+            (0, 0),
+            (0, 0),
+            (0, 0),
+            (0, 0),
+            (0, 0),
+            (0, 0),
+            (0, 0),
+            (0, 0),
+            (0, 0)
+        };
 
-            if (y != 0
-                && lavamap[y - 1][x] != 9
-                && lavamap[y - 1][x] > currentHeight
-                && !pointsInBassin.Contains((x, y - 1)))
-            {
-                pointsInBassin.Add((x, y - 1));
-                coordinatesToCheck.Enqueue((x, y - 1));
-            }
+        var visitedPositions = new List<(int, int)>() { (0, 0) };
 
-            if (y != height - 1
-                && lavamap[y + 1][x] != 9
-                && lavamap[y + 1][x] > currentHeight
-                && !pointsInBassin.Contains((x, y + 1)))
-            {
-                pointsInBassin.Add((x, y + 1));
-                coordinatesToCheck.Enqueue((x, y + 1));
-            }
+        foreach (var command in input)
+        {
+            var parsedCommand = command.Split(" ");
+            var direction = parsedCommand[0];
+            var iteration = int.Parse(parsedCommand[1]);
 
-            if (x != 0
-                && lavamap[y][x - 1] != 9
-                && lavamap[y][x - 1] > currentHeight
-                && !pointsInBassin.Contains((x - 1, y)))
+            for (var i = 1; i <= iteration; i++)
             {
-                pointsInBassin.Add((x - 1, y));
-                coordinatesToCheck.Enqueue((x - 1, y));
-            }
-
-            if (x != length - 1
-                && lavamap[y][x + 1] != 9
-                && lavamap[y][x + 1] > currentHeight
-                && !pointsInBassin.Contains((x + 1, y))
-                )
-            {
-                pointsInBassin.Add((x + 1, y));
-                coordinatesToCheck.Enqueue((x + 1, y));
+                //First move the head 
+                ropePosition[0] = DetermineNewHeadPosition(ropePosition[0], direction);
+                
+                //Then move the 9 knots depending on the position of the previous node
+                for (var j = 1; j <= 9; j++)
+                {
+                    var previousNode = ropePosition[j - 1];
+                    var actualNode = ropePosition[j];
+                    ropePosition[j] = DetermineNewTailPosition(previousNode, actualNode);
+                }
+                
+                if (!visitedPositions.Contains(ropePosition[9]))
+                {
+                    visitedPositions.Add(ropePosition[9]);
+                }
             }
         }
 
-
-        return pointsInBassin.Count;
+        return visitedPositions.Count;
     }
 }

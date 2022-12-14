@@ -1,140 +1,209 @@
 ﻿using AdventOfCode.Data;
 
-namespace AdventOfCode.Day12;
+namespace AdventOfCode2022.Day12;
 
 public static class Day12Solver
 {
+    private static char[][] _input;
+    private static (int height, int width) _entranceCoordinates;
+    private static (int height, int width) _exitCoordinates;
+    private static int _mapHeight;
+    private static int _mapWidth;
+
+    private static HashSet<(int, int)> _unvisitedLocations = new HashSet<(int, int)>();
+    private static Dictionary<(int, int), int> _minimalEffortPerLocation = new Dictionary<(int, int), int>();
+    private static int _numberOfTrial =0;
+
     public static long SolvePuzzle1()
     {
-        var data = DataLoader.LoadDataPerLineFromDay(12)
-            .Select(s => s.Split('-'))
-            .ToList();
+        _input = DataLoader.LoadDataPerLineFromDay(12)
+            .Select(l => l.ToArray())
+            .ToArray();
 
-        var connectionsPerRoom = GetConnectionsPerRoom(data);
+        var entranceHeight = Array.FindIndex(_input, i => i.Contains('S'));
+        var entranceWidth = Array.FindIndex(_input[entranceHeight], i => i == 'S');
+        var maxEffort = 100000;
+        _entranceCoordinates = (entranceHeight, entranceWidth);
 
-        var stack = new Stack<List<string>>();
-        stack.Push(new List<string> { "start" });
+        var exitHeight = Array.FindIndex(_input, i => i.Contains('E'));
+        var exitWidth = Array.FindIndex(_input[exitHeight], i => i == 'E');
+        _exitCoordinates = (exitHeight, exitWidth);
 
-        var validPaths = new List<List<string>>();
+        _mapHeight = _input.Length;
+        _mapWidth = _input[0].Length;
+        
 
-        while (stack.TryPop(out var currentpath))
+        InitializeEffort(maxEffort);
+
+        var currentLocation = _entranceCoordinates;
+        _minimalEffortPerLocation[_entranceCoordinates] = 0;
+        _unvisitedLocations.Remove(_entranceCoordinates);
+
+        while (currentLocation!= _exitCoordinates)
         {
-            var possibleconnections = connectionsPerRoom[currentpath.Last()];
-
-            foreach (var newRoom in possibleconnections.Where(newRoom => newRoom != "start"))
-            {
-                if (newRoom == "end")
-                {
-                    var newPath = currentpath;
-                    newPath = newPath.Append(newRoom).ToList();
-                    validPaths.Add(newPath);
-                }
-
-                else if (char.IsUpper(newRoom[0]))
-                {
-                    var newPath = currentpath;
-                    newPath = newPath.Append(newRoom).ToList();
-                    stack.Push(newPath);
-                }
-
-                else if (char.IsLower(newRoom[0]) && !currentpath.Contains(newRoom))
-                {
-                    var newPath = currentpath;
-                    newPath = newPath.Append(newRoom).ToList();
-                    stack.Push(newPath);
-                }
-            }
+            KeepExploring(currentLocation, _minimalEffortPerLocation[currentLocation]);
+            var nextLocation = _unvisitedLocations.MinBy(x => _minimalEffortPerLocation[x]);
+            currentLocation = nextLocation;
+            _unvisitedLocations.Remove(currentLocation);
         }
 
-        return validPaths.Count;
+        return _minimalEffortPerLocation[_exitCoordinates];
     }
 
-    private static Dictionary<string, List<string>> GetConnectionsPerRoom(List<string[]> data)
+    private static void InitializeEffort(int maxEffort)
     {
-        var answer = new Dictionary<string, List<string>>();
+        _unvisitedLocations = new HashSet<(int, int)>();
+        _minimalEffortPerLocation = new Dictionary<(int, int), int>();
 
-        foreach (var line in data)
+        for (var i = 0; i <= _mapHeight - 1; i++)
         {
-            if (!answer.ContainsKey(line[0]))
+            for (var j = 0; j <= _mapWidth - 1; j++)
             {
-                answer.Add(line[0], new List<string> { line[1] });
-            }
-            else
-            {
-                answer[line[0]].Add(line[1]);
-            }
-
-            if (!answer.ContainsKey(line[1]))
-            {
-                answer.Add(line[1], new List<string> { line[0] });
-            }
-            else
-            {
-                answer[line[1]].Add(line[0]);
+                _unvisitedLocations.Add((i, j));
+                _minimalEffortPerLocation.Add((i, j), maxEffort);
             }
         }
-
-        return answer;
     }
 
     public static long SolvePuzzle2()
     {
-        var data = DataLoader.LoadDataPerLineFromDay(12)
-            .Select(s => s.Split('-'))
-            .ToList();
+        _input = DataLoader.LoadDataPerLineFromDay(12)
+            .Select(l => l.ToArray())
+            .ToArray();
+        
+        var entranceHeight = Array.FindIndex(_input, i => i.Contains('S'));
+        var entranceWidth = Array.FindIndex(_input[entranceHeight], i => i == 'S');
+        _entranceCoordinates = (entranceHeight, entranceWidth);
 
-        var connectionsPerRoom = GetConnectionsPerRoom(data);
+        var exitHeight = Array.FindIndex(_input, i => i.Contains('E'));
+        var exitWidth = Array.FindIndex(_input[exitHeight], i => i == 'E');
+        _exitCoordinates = (exitHeight, exitWidth);
 
-        var stack = new Stack<List<string>>();
-        stack.Push(new List<string> { "start" });
+        _mapHeight = _input.Length;
+        _mapWidth = _input[0].Length;
 
-        var validPaths = new List<List<string>>();
-
-        while (stack.TryPop(out var currentpath))
+        var possibleStarts = new List<(int, int)>();
+        
+        for (var i = 0; i <= _mapHeight - 1; i++)
         {
-            var possibleconnections = connectionsPerRoom[currentpath.Last()];
-
-            foreach (var newRoom in possibleconnections.Where(newRoom => newRoom != "start"))
+            for (var j = 0; j <= _mapWidth - 1; j++)
             {
-                if (newRoom == "end")
+                if (_input[i][j] == 'a' || _input[i][j] == 'S')
                 {
-                    var newPath = currentpath;
-                    newPath = newPath.Append(newRoom).ToList();
-                    validPaths.Add(newPath);
-                }
-
-                else if (char.IsUpper(newRoom[0]))
-                {
-                    var newPath = currentpath;
-                    newPath = newPath.Append(newRoom).ToList();
-                    stack.Push(newPath);
-                }
-
-                else if (char.IsLower(newRoom[0])
-                         && (!currentpath.Contains(newRoom) || !WasASmallCaveVisitedTwice(currentpath)))
-
-                {
-                    var newPath = currentpath;
-                    newPath = newPath.Append(newRoom).ToList();
-                    stack.Push(newPath);
-                }
+                    possibleStarts.Add((i,j));
+                } 
             }
         }
 
-        validPaths = validPaths.OrderBy(s => s.Count).ToList();
-
-        return validPaths.Count;
+        return possibleStarts.Min(CalculateMinimumEffort);
     }
 
-    private static bool WasASmallCaveVisitedTwice(List<string> path)
+    private static int CalculateMinimumEffort((int, int) startingPath)
     {
-        var smallcaveCount = path.Count(s => char.IsLower(s[0]));
-        var smallcaveDistinctCount = path
-            .Where(s => char.IsLower(s[0]))
-            .Distinct()
-            .Count();
+        InitializeEffort(10000);
+        var currentLocation = startingPath;
+        _minimalEffortPerLocation[currentLocation] = 0;
+        _unvisitedLocations.Remove(currentLocation);
 
+        while (currentLocation!= _exitCoordinates)
+        {
+            KeepExploring(currentLocation, _minimalEffortPerLocation[currentLocation]);
+            var nextLocation = _unvisitedLocations.MinBy(x => _minimalEffortPerLocation[x]);
+            currentLocation = nextLocation;
+            _unvisitedLocations.Remove(currentLocation);
+        }
 
-        return smallcaveCount != smallcaveDistinctCount;
+        _numberOfTrial += 1;
+        if (_numberOfTrial % 100 ==0)
+        {
+            Console.WriteLine($"trial :{_numberOfTrial} ");
+        }
+
+        return _minimalEffortPerLocation[_exitCoordinates];
+    }
+
+    private static void KeepExploring((int, int) currentPath, int currentEffort)
+    {
+        LookNorth(currentPath, currentEffort);
+        LookSouth(currentPath, currentEffort);
+        LookWest(currentPath, currentEffort);
+        LookEast(currentPath, currentEffort);
+    }
+
+    private static void LookNorth((int height, int width) currentTile, int currentEffort)
+    {
+        var tileNorth = (currentTile.height - 1, currentTile.width);
+
+        if (currentTile.height - 1 < 0
+            || !_unvisitedLocations.Contains(tileNorth)
+            || !IsReachable(currentTile, tileNorth))
+        {
+            return;
+        }
+
+        _minimalEffortPerLocation[tileNorth] = Math.Min(_minimalEffortPerLocation[tileNorth], currentEffort + 1);
+    }
+
+    private static void LookSouth((int height, int width) currentTile, int currentEffort)
+    {
+        var tilesouth = (currentTile.height + 1, currentTile.width);
+
+        if (currentTile.height + 1 > _mapHeight - 1
+            || !_unvisitedLocations.Contains(tilesouth)
+            || !IsReachable(currentTile, tilesouth))
+        {
+            return;
+        }
+
+        _minimalEffortPerLocation[tilesouth] = Math.Min(_minimalEffortPerLocation[tilesouth], currentEffort + 1);
+    }
+
+    private static void LookWest((int height, int width) currentTile, int currentEffort)
+    {
+        var tileWest = (currentTile.height, currentTile.width - 1);
+
+        if (currentTile.width - 1 < 0
+            || !_unvisitedLocations.Contains(tileWest)
+            || !IsReachable(currentTile, tileWest))
+        {
+            return;
+        }
+
+        _minimalEffortPerLocation[tileWest] = Math.Min(_minimalEffortPerLocation[tileWest], currentEffort + 1);
+    }
+
+    private static void LookEast((int height, int width) currentTile, int currentEffort)
+    {
+        var tileEast = (currentTile.height, currentTile.width + 1);
+
+        if (currentTile.width + 1 > _mapWidth - 1
+            || !_unvisitedLocations.Contains(tileEast)
+            || !IsReachable(currentTile, tileEast))
+        {
+            return;
+        }
+
+        _minimalEffortPerLocation[tileEast] = Math.Min(_minimalEffortPerLocation[tileEast], currentEffort + 1);
+    }
+
+    private static int GetHeight(char character)
+    {
+        switch (character)
+        {
+            case 'S':
+                return (int)'a';
+            case 'E':
+                return (int)'z';
+            default:
+                return character;
+        }
+    }
+
+    private static bool IsReachable((int height, int width) currentTileCoordinate, (int height, int width) nextTileCoordinate)
+    {
+        var currentHeight = GetHeight(_input[currentTileCoordinate.height][currentTileCoordinate.width]);
+        var nextHeight = GetHeight(_input[nextTileCoordinate.height][nextTileCoordinate.width]);
+
+        return nextHeight - 1 <= currentHeight;
     }
 }
