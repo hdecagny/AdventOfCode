@@ -1,17 +1,18 @@
-﻿using AdventOfCode.Data;
+﻿
+namespace AdventOfCode2022.Day7;
 
-namespace AdventOfCode.Day7;
+using AdventOfCode2022;
 
-public static class Day7Solver
+public class Day7Solver : SolverBase2022
 {
     private static Dictionary<string, List<string>> _arborescence = new Dictionary<string, List<string>>();
     private static Dictionary<string, List<string>> _listOfFilesPerDir = new Dictionary<string, List<string>>();
     private static Dictionary<string, long> _sizeOfFilesPerDir = new Dictionary<string, long>();
     private static Dictionary<string, long> _totalSizePerDir = new Dictionary<string, long>();
 
-    public static long SolvePuzzle1()
+    public long SolvePuzzle1()
     {
-        var data = DataLoader.LoadDataPerLineFromDay(7);
+        var data = LoadDataPerLineFromDay(7);
         _arborescence.Add("/", new List<string>());
         _listOfFilesPerDir.Add("/", new List<string>());
         _sizeOfFilesPerDir.Add("/", 0);
@@ -21,7 +22,7 @@ public static class Day7Solver
         return _totalSizePerDir.Where(t => t.Value <= 100000).Sum(t => t.Value);
     }
 
-    private static void ParseFiles(string[] data)
+    private void ParseFiles(string[] data)
     {
         var actualDirectory = "/";
         var stringDepth = new List<string>();
@@ -139,9 +140,9 @@ public static class Day7Solver
         return totalsize;
     }
 
-    public static double SolvePuzzle2()
+    public double SolvePuzzle2()
     {
-        var data = DataLoader.LoadDataPerLineFromDay(7);
+        var data = LoadDataPerLineFromDay(7);
         _arborescence.Add("/", new List<string>());
         _listOfFilesPerDir.Add("/", new List<string>());
         _sizeOfFilesPerDir.Add("/", 0);
@@ -153,8 +154,7 @@ public static class Day7Solver
         var occupiedMemory = _totalSizePerDir["/"];
         var minMemoryToDelete = occupiedMemory - wishedsize;
 
-
         return _totalSizePerDir.Where(t => t.Value >= minMemoryToDelete)
-            .Min(t => t.Value);
+                               .Min(t => t.Value);
     }
 }

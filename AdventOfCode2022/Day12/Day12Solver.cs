@@ -1,22 +1,22 @@
-﻿using AdventOfCode.Data;
+﻿
 
 namespace AdventOfCode2022.Day12;
 
-public static class Day12Solver
+public  class Day12Solver : SolverBase2022
 {
-    private static char[][] _input;
-    private static (int height, int width) _entranceCoordinates;
-    private static (int height, int width) _exitCoordinates;
-    private static int _mapHeight;
-    private static int _mapWidth;
+    private  char[][] _input;
+    private  (int height, int width) _entranceCoordinates;
+    private  (int height, int width) _exitCoordinates;
+    private  int _mapHeight;
+    private  int _mapWidth;
 
-    private static HashSet<(int, int)> _unvisitedLocations = new HashSet<(int, int)>();
-    private static Dictionary<(int, int), int> _minimalEffortPerLocation = new Dictionary<(int, int), int>();
-    private static int _numberOfTrial =0;
+    private  HashSet<(int, int)> _unvisitedLocations = new HashSet<(int, int)>();
+    private  Dictionary<(int, int), int> _minimalEffortPerLocation = new Dictionary<(int, int), int>();
+    private  int _numberOfTrial =0;
 
-    public static long SolvePuzzle1()
+    public  long SolvePuzzle1()
     {
-        _input = DataLoader.LoadDataPerLineFromDay(12)
+        _input = LoadDataPerLineFromDay(12)
             .Select(l => l.ToArray())
             .ToArray();
 
@@ -50,7 +50,7 @@ public static class Day12Solver
         return _minimalEffortPerLocation[_exitCoordinates];
     }
 
-    private static void InitializeEffort(int maxEffort)
+    private  void InitializeEffort(int maxEffort)
     {
         _unvisitedLocations = new HashSet<(int, int)>();
         _minimalEffortPerLocation = new Dictionary<(int, int), int>();
@@ -65,9 +65,9 @@ public static class Day12Solver
         }
     }
 
-    public static long SolvePuzzle2()
+    public  long SolvePuzzle2()
     {
-        _input = DataLoader.LoadDataPerLineFromDay(12)
+        _input = LoadDataPerLineFromDay(12)
             .Select(l => l.ToArray())
             .ToArray();
         
@@ -98,7 +98,7 @@ public static class Day12Solver
         return possibleStarts.Min(CalculateMinimumEffort);
     }
 
-    private static int CalculateMinimumEffort((int, int) startingPath)
+    private  int CalculateMinimumEffort((int, int) startingPath)
     {
         InitializeEffort(10000);
         var currentLocation = startingPath;
@@ -122,7 +122,7 @@ public static class Day12Solver
         return _minimalEffortPerLocation[_exitCoordinates];
     }
 
-    private static void KeepExploring((int, int) currentPath, int currentEffort)
+    private  void KeepExploring((int, int) currentPath, int currentEffort)
     {
         LookNorth(currentPath, currentEffort);
         LookSouth(currentPath, currentEffort);
@@ -130,7 +130,7 @@ public static class Day12Solver
         LookEast(currentPath, currentEffort);
     }
 
-    private static void LookNorth((int height, int width) currentTile, int currentEffort)
+    private  void LookNorth((int height, int width) currentTile, int currentEffort)
     {
         var tileNorth = (currentTile.height - 1, currentTile.width);
 
@@ -144,7 +144,7 @@ public static class Day12Solver
         _minimalEffortPerLocation[tileNorth] = Math.Min(_minimalEffortPerLocation[tileNorth], currentEffort + 1);
     }
 
-    private static void LookSouth((int height, int width) currentTile, int currentEffort)
+    private  void LookSouth((int height, int width) currentTile, int currentEffort)
     {
         var tilesouth = (currentTile.height + 1, currentTile.width);
 
@@ -158,7 +158,7 @@ public static class Day12Solver
         _minimalEffortPerLocation[tilesouth] = Math.Min(_minimalEffortPerLocation[tilesouth], currentEffort + 1);
     }
 
-    private static void LookWest((int height, int width) currentTile, int currentEffort)
+    private  void LookWest((int height, int width) currentTile, int currentEffort)
     {
         var tileWest = (currentTile.height, currentTile.width - 1);
 
@@ -172,7 +172,7 @@ public static class Day12Solver
         _minimalEffortPerLocation[tileWest] = Math.Min(_minimalEffortPerLocation[tileWest], currentEffort + 1);
     }
 
-    private static void LookEast((int height, int width) currentTile, int currentEffort)
+    private  void LookEast((int height, int width) currentTile, int currentEffort)
     {
         var tileEast = (currentTile.height, currentTile.width + 1);
 
@@ -186,7 +186,7 @@ public static class Day12Solver
         _minimalEffortPerLocation[tileEast] = Math.Min(_minimalEffortPerLocation[tileEast], currentEffort + 1);
     }
 
-    private static int GetHeight(char character)
+    private  int GetHeight(char character)
     {
         switch (character)
         {
@@ -199,7 +199,7 @@ public static class Day12Solver
         }
     }
 
-    private static bool IsReachable((int height, int width) currentTileCoordinate, (int height, int width) nextTileCoordinate)
+    private  bool IsReachable((int height, int width) currentTileCoordinate, (int height, int width) nextTileCoordinate)
     {
         var currentHeight = GetHeight(_input[currentTileCoordinate.height][currentTileCoordinate.width]);
         var nextHeight = GetHeight(_input[nextTileCoordinate.height][nextTileCoordinate.width]);

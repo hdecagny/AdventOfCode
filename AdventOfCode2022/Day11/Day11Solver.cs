@@ -1,12 +1,11 @@
-﻿using AdventOfCode.Data;
-
+﻿
 namespace AdventOfCode2022.Day11;
 
-public static class Day11Solver
+public  class Day11Solver : SolverBase2022
 {
-    public static long SolvePuzzle1()
+    public  long SolvePuzzle1()
     {
-        var input = DataLoader.LoadDataFromDay(11);
+        var input = LoadDataFromDay(11);
         var monkeyStrings = input.Split("\r\n\r\n");
 
         var monkeys = monkeyStrings
@@ -24,7 +23,7 @@ public static class Day11Solver
         return monkeyPerMonkeyBusiness[0].MonkeyBusiness * monkeyPerMonkeyBusiness[1].MonkeyBusiness;
     }
 
-    private static void DoAMonkeyRound(List<Monkey> monkeys)
+    private  void DoAMonkeyRound(List<Monkey> monkeys)
     {
         foreach (var monkey in monkeys)
         {
@@ -40,9 +39,9 @@ public static class Day11Solver
     }
 
 
-    public static long SolvePuzzle2()
+    public  long SolvePuzzle2()
     {
-        var input = DataLoader.LoadDataFromDay(11);
+        var input = LoadDataFromDay(11);
         var monkeyStrings = input.Split("\r\n\r\n");
 
         var monkeys = monkeyStrings
@@ -60,7 +59,7 @@ public static class Day11Solver
         return monkeyPerMonkeyBusiness[0].MonkeyBusiness * monkeyPerMonkeyBusiness[1].MonkeyBusiness;
     }
 
-    private static void DoAMonkeyRound2(List<Monkey> monkeys)
+    private  void DoAMonkeyRound2(List<Monkey> monkeys)
     {
         var commonDeviser = 1;
         

@@ -1,16 +1,14 @@
-﻿using AdventOfCode.Data;
+﻿namespace AdventOfCode2022.Day8;
 
-namespace AdventOfCode2022.Day8;
-
-public static class Day8Solver
+public  class Day8Solver : SolverBase2022
 {
-    private static int[][] _input = new int[][] { };
-    private static int _forestHeight;
-    private static int _forestWidth;
+    private  int[][] _input = new int[][] { };
+    private  int _forestHeight;
+    private  int _forestWidth;
 
-    public static long SolvePuzzle1()
+    public  long SolvePuzzle1()
     {
-        _input = DataLoader.LoadDataPerLineFromDay(8)
+        _input = LoadDataPerLineFromDay(8)
             .Select(l => l.ToArray()
                 .Select(i => int.Parse(i.ToString()))
                 .ToArray())
@@ -19,7 +17,7 @@ public static class Day8Solver
         return FindVisibleTrees();
     }
 
-    private static long FindVisibleTrees()
+    private  long FindVisibleTrees()
     {
         var answer = 0;
         _forestHeight = _input.Length;
@@ -41,7 +39,7 @@ public static class Day8Solver
         return answer;
     }
 
-    private static bool IsOnTheEdge(long heightCoordinate,
+    private  bool IsOnTheEdge(long heightCoordinate,
         long widthCoordinate)
     {
         return (heightCoordinate == 0
@@ -50,7 +48,7 @@ public static class Day8Solver
                 || widthCoordinate == _forestWidth - 1);
     }
 
-    private static bool IsVisibleFromWest(long heightCoordinate,
+    private  bool IsVisibleFromWest(long heightCoordinate,
         long widthCoordinate)
     {
         var treeHeight = _input[heightCoordinate][widthCoordinate];
@@ -66,7 +64,7 @@ public static class Day8Solver
         return true;
     }
 
-    private static bool IsVisibleFromEast(long heightCoordinate,
+    private  bool IsVisibleFromEast(long heightCoordinate,
         long widthCoordinate)
     {
         var treeHeight = _input[heightCoordinate][widthCoordinate];
@@ -82,7 +80,7 @@ public static class Day8Solver
         return true;
     }
 
-    private static bool IsVisibleFromNorth(long heightCoordinate, long widthCoordinate)
+    private  bool IsVisibleFromNorth(long heightCoordinate, long widthCoordinate)
     {
         var treeHeight = _input[heightCoordinate][widthCoordinate];
 
@@ -97,7 +95,7 @@ public static class Day8Solver
         return true;
     }
 
-    private static bool IsVisibleFromSouth(long heightCoordinate,
+    private  bool IsVisibleFromSouth(long heightCoordinate,
         long widthCoordinate)
     {
         var treeHeight = _input[heightCoordinate][widthCoordinate];
@@ -113,9 +111,9 @@ public static class Day8Solver
         return true;
     }
 
-    public static double SolvePuzzle2()
+    public  double SolvePuzzle2()
     {
-        _input = DataLoader.LoadDataPerLineFromDay(8)
+        _input = LoadDataPerLineFromDay(8)
             .Select(l => l.ToArray()
                 .Select(i => int.Parse(i.ToString()))
                 .ToArray())
@@ -127,7 +125,7 @@ public static class Day8Solver
         return FindMaxScenicScore();
     }
 
-    private static long FindMaxScenicScore()
+    private  long FindMaxScenicScore()
     {
         long answer = 0;
 
@@ -154,7 +152,7 @@ public static class Day8Solver
         return answer;
     }
 
-    private static long CalculateWesternScenicScore(long heightCoordinate, long widthCoordinate)
+    private  long CalculateWesternScenicScore(long heightCoordinate, long widthCoordinate)
     {
         var treeHeight = _input[heightCoordinate][widthCoordinate];
         var answer = 1;
@@ -172,7 +170,7 @@ public static class Day8Solver
         return answer;
     }
 
-    private static long CalculateEasternScenicScore(long heightCoordinate, long widthCoordinate)
+    private  long CalculateEasternScenicScore(long heightCoordinate, long widthCoordinate)
     {
         var treeHeight = _input[heightCoordinate][widthCoordinate];
         var answer = 1;
@@ -190,7 +188,7 @@ public static class Day8Solver
         return answer;
     }
 
-    private static long CalculateNorthernScenicScore(long heightCoordinate, long widthCoordinate)
+    private  long CalculateNorthernScenicScore(long heightCoordinate, long widthCoordinate)
     {
         var treeHeight = _input[heightCoordinate][widthCoordinate];
         var answer = 1;
@@ -208,7 +206,7 @@ public static class Day8Solver
         return answer;
     }
 
-    private static long CalculateSouthernScenicScore(long heightCoordinate, long widthCoordinate)
+    private  long CalculateSouthernScenicScore(long heightCoordinate, long widthCoordinate)
     {
         var treeHeight = _input[heightCoordinate][widthCoordinate];
         var answer = 1;

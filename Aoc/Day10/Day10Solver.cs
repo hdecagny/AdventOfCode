@@ -1,4 +1,4 @@
-﻿using AdventOfCode.Data;
+﻿
 
 namespace AdventOfCode.Day10;
 using MathNet.Numerics.Statistics;

@@ -1,12 +1,10 @@
-﻿using AdventOfCode.Data;
+﻿namespace AdventOfCode2022.Day10;
 
-namespace AdventOfCode2022.Day10;
-
-public static class Day10Solver
+public  class Day10Solver: SolverBase2022
 {
-    public static long SolvePuzzle1()
+    public  long SolvePuzzle1()
     {
-        var input = DataLoader.LoadDataPerLineFromDay(10);
+        var input = LoadDataPerLineFromDay(10);
 
         var signalStrengthPerCycle = new Dictionary<int, long> { { 0, 1 } };
         var actualcycle = 1;
@@ -49,9 +47,9 @@ public static class Day10Solver
     }
 
 
-    public static double SolvePuzzle2()
+    public  double SolvePuzzle2()
     {
-        var input = DataLoader.LoadDataPerLineFromDay(10);
+        var input = LoadDataPerLineFromDay(10);
 
         var signalStrengthPerCycle = new Dictionary<int, long> { { 0, 1 } };
         var isPixelLitPerCycle = new Dictionary<int, string>();
@@ -94,7 +92,7 @@ public static class Day10Solver
         return 0;
     }
 
-    private static string IsPixelLitPerCycle(int actualCycle, int spritePosition)
+    private  string IsPixelLitPerCycle(int actualCycle, int spritePosition)
     {
         var spritePositions = new[] { spritePosition - 1, spritePosition, spritePosition + 1 };
 

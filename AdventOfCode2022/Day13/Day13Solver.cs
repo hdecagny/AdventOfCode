@@ -1,14 +1,14 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
-using AdventOfCode.Data;
+
 
 namespace AdventOfCode2022.Day13;
 
-public static class Day13Solver
+public  class Day13Solver : SolverBase2022
 {
-    public static long SolvePuzzle1()
+    public  long SolvePuzzle1()
     {
-        var input = DataLoader.LoadDataFromDay(13);
+        var input = LoadDataFromDay(13);
 
         var pairOfPackets = input.Split("\r\n\r\n");
 
@@ -28,7 +28,7 @@ public static class Day13Solver
         return answer;
     }
 
-    private static bool? ComparePackets(JsonNode leftPacket, JsonNode rightPacket)
+    private  bool? ComparePackets(JsonNode leftPacket, JsonNode rightPacket)
     {
         if (leftPacket is JsonValue leftVal && rightPacket is JsonValue rightVal)
         {
@@ -61,9 +61,9 @@ public static class Day13Solver
         return null;
     }
     
-    public static long SolvePuzzle2()
+    public  long SolvePuzzle2()
     {
-        var input = DataLoader.LoadDataFromDay(13);
+        var input = LoadDataFromDay(13);
 
         var allPackets = input.Split("\r\n\r\n").SelectMany(i => i.Split("\r\n")).ToList();
         allPackets.Add("[[2]]");

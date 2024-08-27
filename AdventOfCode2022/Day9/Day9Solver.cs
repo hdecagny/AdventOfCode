@@ -1,12 +1,11 @@
-﻿using AdventOfCode.Data;
+﻿
+namespace AdventOfCode2022.Day9;
 
-namespace AdventOfCode.Day9;
-
-public static class Day9Solver
+public  class Day9Solver : SolverBase2022
 {
-    public static long SolvePuzzle1()
+    public  long SolvePuzzle1()
     {
-        var input = DataLoader.LoadDataPerLineFromDay(9);
+        var input = LoadDataPerLineFromDay(9);
 
         var headPosition = (0, 0);
         var tailPosition = (0, 0);
@@ -33,7 +32,7 @@ public static class Day9Solver
         return visitedPositions.Count;
     }
 
-    private static (int, int) DetermineNewHeadPosition((int, int) originalHeadPosition, string direction)
+    private  (int, int) DetermineNewHeadPosition((int, int) originalHeadPosition, string direction)
     {
         return direction switch
                {
@@ -45,7 +44,7 @@ public static class Day9Solver
                };
     }
 
-    private static (int, int) DetermineNewTailPosition((int, int) originalHeadPosition, (int, int) originalTailPosition)
+    private  (int, int) DetermineNewTailPosition((int, int) originalHeadPosition, (int, int) originalTailPosition)
     {
         if (ComputeSquareDistance(originalHeadPosition, originalTailPosition) <= 2)
         {
@@ -58,15 +57,15 @@ public static class Day9Solver
         return (newX, newY);
     }
 
-    private static double ComputeSquareDistance((int, int) originalHeadPosition, (int, int) originalTailPosition)
+    private  double ComputeSquareDistance((int, int) originalHeadPosition, (int, int) originalTailPosition)
     {
         return Math.Pow(originalHeadPosition.Item1 - originalTailPosition.Item1, 2) + Math.Pow(originalHeadPosition.Item2 - originalTailPosition.Item2, 2);
     }
 
 
-    public static double SolvePuzzle2()
+    public  double SolvePuzzle2()
     {
-        var input = DataLoader.LoadDataPerLineFromDay(9);
+        var input = LoadDataPerLineFromDay(9);
 
         var ropePosition = new List<(int, int)>()
         {
