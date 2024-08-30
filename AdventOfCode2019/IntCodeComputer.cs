@@ -6,7 +6,7 @@ public class IntCodeComputer
     {
         if (opCode is >= 0 and < 100)
         {
-            return (opCode, [ParameterMode.PositionMode, ParameterMode.PositionMode]);
+            return (opCode, [ParameterMode.PositionMode, ParameterMode.PositionMode, ParameterMode.PositionMode, ParameterMode.PositionMode]);
         }
 
         var opCodeString = opCode.ToString();
@@ -30,31 +30,33 @@ public class IntCodeComputer
     }
 
     public static List<int> PerformAddition(List<int> program,
-                                            int parameter1,
-                                            int parameter2,
-                                            int locationResult,
-                                            ParameterMode parameterMode1,
-                                            ParameterMode parameterMode2)
+                                            int position,
+                                            IReadOnlyList<ParameterMode> parameters)
     {
-        var value1 = parameterMode1 == ParameterMode.PositionMode ? program[parameter1] : parameter1;
-        var value2 = parameterMode2 == ParameterMode.PositionMode ? program[parameter2] : parameter2;
+        var parameter1 = program[position + 1];
+        var parameter2 = program[position + 2];
+        var parameter3 = program[position + 3];
 
-        program[locationResult] = value1 + value2;
+        var value1 = parameters[0] == ParameterMode.PositionMode ? program[parameter1] : parameter1;
+        var value2 = parameters[1] == ParameterMode.PositionMode ? program[parameter2] : parameter2;
+
+        program[parameter3] = value1 + value2;
 
         return program;
     }
 
     public static List<int> PerformMultiplication(List<int> program,
-                                                  int parameter1,
-                                                  int parameter2,
-                                                  int locationResult,
-                                                  ParameterMode parameterMode1,
-                                                  ParameterMode parameterMode2)
+                                                  int position,
+                                                  IReadOnlyList<ParameterMode> parameters)
     {
-        var value1 = parameterMode1 == ParameterMode.PositionMode ? program[parameter1] : parameter1;
-        var value2 = parameterMode2 == ParameterMode.PositionMode ? program[parameter2] : parameter2;
+        var parameter1 = program[position + 1];
+        var parameter2 = program[position + 2];
+        var parameter3 = program[position + 3];
 
-        program[locationResult] = value1 * value2;
+        var value1 = parameters[0] == ParameterMode.PositionMode ? program[parameter1] : parameter1;
+        var value2 = parameters[1] == ParameterMode.PositionMode ? program[parameter2] : parameter2;
+
+        program[parameter3] = value1 * value2;
 
         return program;
     }
@@ -72,28 +74,26 @@ public class IntCodeComputer
 
     public static int PerformJumpIfTrue(List<int> program,
                                         int position,
-                                        ParameterMode parameterMode1,
-                                        ParameterMode parameterMode2)
+                                        IReadOnlyList<ParameterMode> parameters)
     {
         var parameter1 = program[position + 1];
         var parameter2 = program[position + 2];
 
-        var value1 = parameterMode1 == ParameterMode.PositionMode ? program[parameter1] : parameter1;
-        var value2 = parameterMode2 == ParameterMode.PositionMode ? program[parameter2] : parameter2;
+        var value1 = parameters[0] == ParameterMode.PositionMode ? program[parameter1] : parameter1;
+        var value2 = parameters[1] == ParameterMode.PositionMode ? program[parameter2] : parameter2;
 
         return value1 != 0 ? value2 : position + 3;
     }
 
     public static int PerformJumpIfFalse(List<int> program,
                                          int position,
-                                         ParameterMode parameterMode1,
-                                         ParameterMode parameterMode2)
+                                         IReadOnlyList<ParameterMode> parameters)
     {
         var parameter1 = program[position + 1];
         var parameter2 = program[position + 2];
 
-        var value1 = parameterMode1 == ParameterMode.PositionMode ? program[parameter1] : parameter1;
-        var value2 = parameterMode2 == ParameterMode.PositionMode ? program[parameter2] : parameter2;
+        var value1 = parameters[0] == ParameterMode.PositionMode ? program[parameter1] : parameter1;
+        var value2 = parameters[1] == ParameterMode.PositionMode ? program[parameter2] : parameter2;
 
         return value1 == 0 ? value2 : position + 3;
     }
@@ -108,9 +108,8 @@ public class IntCodeComputer
 
         var value1 = parameters[0] == ParameterMode.PositionMode ? program[parameter1] : parameter1;
         var value2 = parameters[1] == ParameterMode.PositionMode ? program[parameter2] : parameter2;
-        var value3 = parameters[2] == ParameterMode.PositionMode ? program[parameter3] : parameter3;
 
-        program[value3] = value1 < value2 ? 1 : 0;
+        program[parameter3] = value1 < value2 ? 1 : 0;
 
         return program;
     }
@@ -125,9 +124,8 @@ public class IntCodeComputer
 
         var value1 = parameters[0] == ParameterMode.PositionMode ? program[parameter1] : parameter1;
         var value2 = parameters[1] == ParameterMode.PositionMode ? program[parameter2] : parameter2;
-        var value3 = parameters[2] == ParameterMode.PositionMode ? program[parameter3] : parameter3;
 
-        program[value3] = value1 == value2 ? 1 : 0;
+        program[parameter3] = value1 == value2 ? 1 : 0;
 
         return program;
     }
