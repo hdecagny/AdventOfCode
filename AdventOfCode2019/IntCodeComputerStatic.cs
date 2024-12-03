@@ -1,67 +1,87 @@
 ﻿namespace AdventOfCode2019;
 
-public class IntCodeComputerStatic
+public class IntCodeComputer
 {
-    public static int RunIntCodeComputer(List<int> program, List<int> inputs)
-    {
-        var programPosition = 0;
-        var inputPosition = 0;
-        var result = -9999;
+    private List<int> _program;
+    private readonly List<int> _instructionList;
+    private int _position;
+    private int _instructionListPosition;
+    public int Result { get; private set; }
+    public bool IsCompleted { get; private set; }
 
-        while (programPosition < program.Count)
+    public IntCodeComputer(List<int> program)
+    {
+        _program = program;
+        _instructionListPosition = 0;
+        Result = -9999;
+        IsCompleted = false;
+        _instructionList = new List<int>();
+    }
+
+    public bool RunIntCodeComputer(int input)
+    {
+        _instructionList.Add(input);
+
+        while (_position < _program.Count)
         {
-            var opcode = program[programPosition];
+            var opcode = _program[_position];
             var instructions = ParseOpCode(opcode);
             switch (instructions.operation)
             {
                 case 1:
-                    program = PerformAddition(program,
-                        programPosition,
+                    _program = PerformAddition(_program,
+                        _position,
                         instructions.parameterModes);
-                    programPosition += 4;
+                    _position += 4;
                     break;
                 case 2:
-                    program = PerformMultiplication(program,
-                        programPosition,
+                    _program = PerformMultiplication(_program,
+                        _position,
                         instructions.parameterModes);
-                    programPosition += 4;
+                    _position += 4;
                     break;
                 case 3:
-                    program = SetInput(program, inputs[inputPosition], program[programPosition + 1]);
-                    inputPosition += 1;
-                    programPosition += 2;
+                    if (_instructionList.Count == _instructionListPosition) // means that we are waiting for instruction
+                    {
+                        return false;
+                    }
+
+                    _program = SetInput(_program, _instructionList[_instructionListPosition], _program[_position + 1]);
+                    _position += 2;
+                    _instructionListPosition += 1;
                     break;
                 case 4:
-                    result = GetOutput(program, program[programPosition + 1]);
-                    programPosition += 2;
+                    Result = GetOutput(_program, _program[_position + 1]);
+                    _position += 2;
                     break;
                 case 5:
-                    programPosition = PerformJumpIfTrue(program,
-                        programPosition,
+                    _position = PerformJumpIfTrue(_program,
+                        _position,
                         instructions.parameterModes);
                     break;
                 case 6:
-                    programPosition = PerformJumpIfFalse(program,
-                        programPosition,
+                    _position = PerformJumpIfFalse(_program,
+                        _position,
                         instructions.parameterModes);
                     break;
                 case 7:
-                    program = PerformLessThan(program, programPosition, instructions.parameterModes);
-                    programPosition += 4;
+                    _program = PerformLessThan(_program, _position, instructions.parameterModes);
+                    _position += 4;
                     break;
                 case 8:
-                    program = PerformEquals(program, programPosition, instructions.parameterModes);
-                    programPosition += 4;
+                    _program = PerformEquals(_program, _position, instructions.parameterModes);
+                    _position += 4;
                     break;
                 case 99:
-                    return result;
+                    IsCompleted = true;
+                    return true;
             }
         }
 
-        return result;
+        return false;
     }
 
-    public static (int operation, IReadOnlyList<ParameterMode> parameterModes) ParseOpCode(int opCode)
+    private static (int operation, IReadOnlyList<ParameterMode> parameterModes) ParseOpCode(int opCode)
     {
         if (opCode is >= 0 and < 100)
         {
@@ -88,7 +108,7 @@ public class IntCodeComputerStatic
         return (operation, parameterList);
     }
 
-    public static List<int> PerformAddition(List<int> program,
+    private static List<int> PerformAddition(List<int> program,
         int position,
         IReadOnlyList<ParameterMode> parameters)
     {
@@ -104,7 +124,7 @@ public class IntCodeComputerStatic
         return program;
     }
 
-    public static List<int> PerformMultiplication(List<int> program,
+    private static List<int> PerformMultiplication(List<int> program,
         int position,
         IReadOnlyList<ParameterMode> parameters)
     {
@@ -120,18 +140,18 @@ public class IntCodeComputerStatic
         return program;
     }
 
-    public static List<int> SetInput(List<int> program, int input, int position)
+    private static List<int> SetInput(List<int> program, int input, int position)
     {
         program[position] = input;
         return program;
     }
 
-    public static int GetOutput(List<int> program, int position)
+    private static int GetOutput(List<int> program, int position)
     {
         return program[position];
     }
 
-    public static int PerformJumpIfTrue(List<int> program,
+    private static int PerformJumpIfTrue(List<int> program,
         int position,
         IReadOnlyList<ParameterMode> parameters)
     {
@@ -144,7 +164,7 @@ public class IntCodeComputerStatic
         return value1 != 0 ? value2 : position + 3;
     }
 
-    public static int PerformJumpIfFalse(List<int> program,
+    private static int PerformJumpIfFalse(List<int> program,
         int position,
         IReadOnlyList<ParameterMode> parameters)
     {
@@ -157,7 +177,7 @@ public class IntCodeComputerStatic
         return value1 == 0 ? value2 : position + 3;
     }
 
-    public static List<int> PerformLessThan(List<int> program,
+    private static List<int> PerformLessThan(List<int> program,
         int position,
         IReadOnlyList<ParameterMode> parameters)
     {
@@ -173,7 +193,7 @@ public class IntCodeComputerStatic
         return program;
     }
 
-    public static List<int> PerformEquals(List<int> program,
+    private static List<int> PerformEquals(List<int> program,
         int position,
         IReadOnlyList<ParameterMode> parameters)
     {
@@ -188,10 +208,4 @@ public class IntCodeComputerStatic
 
         return program;
     }
-}
-
-public enum ParameterMode
-{
-    PositionMode = 0,
-    ImmediateMode = 1
 }

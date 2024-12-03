@@ -5,7 +5,7 @@ using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
-public class IntCodeComputerTest
+public class IntCodeComputerStaticTest
 {
     [TestMethod]
     [DataRow(1, 1, ParameterMode.PositionMode, ParameterMode.PositionMode)]
@@ -17,7 +17,7 @@ public class IntCodeComputerTest
     public void ParseOpCode_worksWell(int input, int operation, ParameterMode parameter1, ParameterMode parameter2)
     {
         // Arrange & Act
-        var result = IntCodeComputer.ParseOpCode(input);
+        var result = IntCodeComputerStatic.ParseOpCode(input);
 
         // Assert
         result.operation.Should().Be(operation);
