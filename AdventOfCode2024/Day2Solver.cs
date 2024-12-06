@@ -10,7 +10,7 @@ public class Day2Solver : SolverBase2024
 
         return data.Where(IsSafe).Count();
     }
-    
+
     private static bool IsSafe(List<int> input)
     {
         var comparingWithNext = input.Zip(input.Skip(1)).ToList();
@@ -37,17 +37,14 @@ public class Day2Solver : SolverBase2024
             return true;
         }
 
-        for (var i = 0; i < input.Count; i++)
-        {
-            var trimmedList = input.ToList();
-            trimmedList.RemoveAt(i);
-
-            if (IsSafe(trimmedList))
+        var range = Enumerable.Range(0, input.Count).ToList();
+        return range
+            .Select(t =>
             {
-                return true;
-            }
-        }
-
-        return false;
+                var trimmedList = input.ToList();
+                trimmedList.RemoveAt(t);
+                return trimmedList;
+            })
+            .Any(IsSafe);
     }
 }
