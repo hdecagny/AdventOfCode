@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode.Data
 {
+    using System.Numerics;
+
     public class DataLoader
     {
         public static string[] LoadDataPerLineFromDay(int year, int day)
